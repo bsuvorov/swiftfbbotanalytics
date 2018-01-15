@@ -21,7 +21,7 @@ public class KibanaAnalytics {
     let authorization: String
     let isAnalyticsDisabled: Bool = false
     
-    init(client: Vapor.Responder,
+    public init(client: Vapor.Responder,
          analyticsIndexName: String,
          host: String,
          endpoint: String,
@@ -34,28 +34,28 @@ public class KibanaAnalytics {
         self.authorization = authorization
     }
     
-    func logException(_ error: Error, dict: [String: Any] = [String: Any]()) {
+    public func logException(_ error: Error, dict: [String: Any] = [String: Any]()) {
         var payload = dict
         payload["event_type"] = ExceptionEvent
         payload["error"] = "\(error)"
         timestampAndLogEngPayload(payload, event: ExceptionEvent)
     }
     
-    func logError(_ error: String, dict: [String: Any] = [String: Any]()) {
+    public func logError(_ error: String, dict: [String: Any] = [String: Any]()) {
         print(error)
         var payload = dict
         payload["error"] = error
         timestampAndLogEngPayload(payload, event: ErrorEvent)
     }
     
-    func logWarning(_ warning: String, dict: [String: Any] = [String: Any]()) {
+    public func logWarning(_ warning: String, dict: [String: Any] = [String: Any]()) {
         print("Warning: \(warning)")
         var payload = dict
         payload["error"] = warning
         timestampAndLogEngPayload(payload, event: WarningEvent)
     }
     
-    func logResponse(_ response: Response, endpoint: String, dict: [String: Any] = [String: Any](), duration: Int? = nil) {
+    public func logResponse(_ response: Response, endpoint: String, dict: [String: Any] = [String: Any](), duration: Int? = nil) {
         var payload = dict
         payload["error"] = response.json?["error.message"]?.string
         payload["endpoint"] = endpoint
@@ -64,7 +64,7 @@ public class KibanaAnalytics {
         timestampAndLogEngPayload(payload, event: HttpResponse)
     }
     
-    func elkLogAnalytics(event: String, email: String, details: [String: Any] = [String:Any]()) {
+    public func elkLogAnalytics(event: String, email: String, details: [String: Any] = [String:Any]()) {
         var payload = [String: Any]()
         payload["event_type"] = event
         payload["email"] = email
@@ -82,7 +82,7 @@ public class KibanaAnalytics {
         self.writeKibanaEntry(url: url, event: payload)
     }
     
-    func writeKibanaEntry(url: String, event: [String: Any]) {
+    public func writeKibanaEntry(url: String, event: [String: Any]) {
         DispatchQueue.global(qos: DispatchQoS.QoSClass.background).async {[weak self] in
             guard let welf = self else {
                 return
@@ -106,17 +106,17 @@ public class KibanaAnalytics {
         }
     }
     
-    func elkURL(index: String, eventId: String) -> String {
+    public func elkURL(index: String, eventId: String) -> String {
         return "http://\(host)/\(index)/\(endpoint)/\(eventId)"
     }
     
-    func elkEngURLFor(event: String, timestamp: Int) -> String {
+    public func elkEngURLFor(event: String, timestamp: Int) -> String {
         let eventId = "\(event)_\(timestamp)"
         let index = self.analyticsIndexName
         return elkURL(index: index, eventId: eventId)
     }
     
-    func timestampAndLogEngPayload(_ dict: [String: Any], event: String) {
+    public func timestampAndLogEngPayload(_ dict: [String: Any], event: String) {
         if self.isAnalyticsDisabled {
             return
         }

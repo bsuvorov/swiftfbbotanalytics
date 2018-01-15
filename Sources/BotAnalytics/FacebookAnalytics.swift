@@ -9,12 +9,12 @@ public class FacebookAnalytics {
     let pageID: String
     let endpoint: String
     let event: String
-    var advertiserTrackingEnabled = true
-    var applicationTrackingEnabled = true
-    var extinfo = "[\"mb1\"]"
+    public var advertiserTrackingEnabled = true
+    public var applicationTrackingEnabled = true
+    public var extinfo = "[\"mb1\"]"
     private var fbDefaultPayload: [String: Any] = [:]
     
-    init(client: Vapor.Responder, appID: String, pageID:String, endpoint: String, event:String) {
+    public init(client: Vapor.Responder, appID: String, pageID:String, endpoint: String, event:String) {
         self.client = client
         self.appID = appID
         self.pageID = pageID
@@ -22,7 +22,7 @@ public class FacebookAnalytics {
         self.event = event
     }
     
-    func getFbDefaultPayload() -> [String: Any] {
+    public func getFbDefaultPayload() -> [String: Any] {
         if fbDefaultPayload.count == 0 {
             fbDefaultPayload = [
                 "event": self.event,
@@ -36,7 +36,7 @@ public class FacebookAnalytics {
         return fbDefaultPayload
     }
     
-    func getFBPayloadFor(event: String, senderId: String) -> [String: Any] {
+    public func getFBPayloadFor(event: String, senderId: String) -> [String: Any] {
         var payload = getFbDefaultPayload()
         payload["page_scoped_user_id"] = senderId
         
