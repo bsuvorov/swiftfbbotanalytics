@@ -16,6 +16,7 @@ public class KibanaAnalytics {
     
     let client: Vapor.Responder
     let analyticsIndexName: String
+    let engAnalyticsIndexName: String
     let host: String
     let endpoint: String
     let authorization: String
@@ -23,12 +24,14 @@ public class KibanaAnalytics {
     
     public init(client: Vapor.Responder,
          analyticsIndexName: String,
+         engAnalyticsIndexName: String,
          host: String,
          endpoint: String,
          authorization: String) {
         
         self.client = client
         self.analyticsIndexName = analyticsIndexName
+        self.engAnalyticsIndexName = engAnalyticsIndexName
         self.host = host
         self.endpoint = endpoint
         self.authorization = authorization
@@ -112,7 +115,7 @@ public class KibanaAnalytics {
     
     public func elkEngURLFor(event: String, timestamp: Int) -> String {
         let eventId = "\(event)_\(timestamp)"
-        let index = self.analyticsIndexName
+        let index = self.engAnalyticsIndexName
         return elkURL(index: index, eventId: eventId)
     }
     
