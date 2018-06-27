@@ -17,6 +17,7 @@ public class KibanaAnalytics {
     let client: Vapor.Responder
     let analyticsIndexName: String
     let engAnalyticsIndexName: String
+    let engErrorsIndexName: String
     let host: String
     let endpoint: String
     let authorization: String
@@ -25,6 +26,7 @@ public class KibanaAnalytics {
     public init(client: Vapor.Responder,
          analyticsIndexName: String,
          engAnalyticsIndexName: String,
+         engErrorsIndexName: String,
          host: String,
          endpoint: String,
          authorization: String) {
@@ -32,6 +34,7 @@ public class KibanaAnalytics {
         self.client = client
         self.analyticsIndexName = analyticsIndexName
         self.engAnalyticsIndexName = engAnalyticsIndexName
+        self.engErrorsIndexName = engErrorsIndexName
         self.host = host
         self.endpoint = endpoint
         self.authorization = authorization
@@ -79,6 +82,9 @@ public class KibanaAnalytics {
         let timestamp = Int(now.timeIntervalSince1970 * 1000)
         payload["date"] = timestamp
         let eventId = "\(event)_\(timestamp)"
+        if event == WarningEvent || ErrorEvent || ExceptionEvent {
+            let index = self.engErrorsIndexName
+        }
         let index = self.analyticsIndexName
         
         let url = elkURL(index: index, eventId: eventId)
@@ -115,6 +121,9 @@ public class KibanaAnalytics {
     
     public func elkEngURLFor(event: String, timestamp: Int) -> String {
         let eventId = "\(event)_\(timestamp)"
+        if event == WarningEvent || ErrorEvent || ExceptionEvent {
+            let index = self.engErrorsIndexName
+        }
         let index = self.engAnalyticsIndexName
         return elkURL(index: index, eventId: eventId)
     }
