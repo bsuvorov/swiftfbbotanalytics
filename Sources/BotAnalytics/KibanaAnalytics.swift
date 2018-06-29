@@ -82,9 +82,6 @@ public class KibanaAnalytics {
         let timestamp = Int(now.timeIntervalSince1970 * 1000)
         payload["date"] = timestamp
         let eventId = "\(event)_\(timestamp)"
-        if event == WarningEvent || event == ErrorEvent || event == ExceptionEvent {
-            let index = self.engErrorsIndexName
-        }
         let index = self.analyticsIndexName
         
         let url = elkURL(index: index, eventId: eventId)
@@ -123,6 +120,7 @@ public class KibanaAnalytics {
         let eventId = "\(event)_\(timestamp)"
         if event == WarningEvent || event == ErrorEvent || event == ExceptionEvent {
             let index = self.engErrorsIndexName
+            return elkURL(index: index, eventId: eventId)
         }
         let index = self.engAnalyticsIndexName
         return elkURL(index: index, eventId: eventId)
