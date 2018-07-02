@@ -82,9 +82,8 @@ public class KibanaAnalytics {
         let timestamp = Int(now.timeIntervalSince1970 * 1000)
         payload["date"] = timestamp
         let eventId = "\(event)_\(timestamp)"
-        let index = self.analyticsIndexName
         
-        let url = elkURL(index: index, eventId: eventId)
+        let url = elkProductURLFor(eventId: eventId)
         self.writeKibanaEntry(url: url, event: payload)
     }
     
@@ -112,18 +111,20 @@ public class KibanaAnalytics {
         }
     }
     
-    public func elkURL(index: String, eventId: String) -> String {
+    private func elkURL(index: String, eventId: String) -> String {
         return "http://\(host)/\(index)/\(endpoint)/\(eventId)"
+    }
+    
+    public func elkProductURLFor(eventId: String) -> String {
+        return elkURL(index: self.analyticsIndexName, eventId: eventId)
     }
     
     public func elkEngURLFor(event: String, timestamp: Int) -> String {
         let eventId = "\(event)_\(timestamp)"
         if event == WarningEvent || event == ErrorEvent || event == ExceptionEvent {
-            let index = self.engErrorsIndexName
-            return elkURL(index: index, eventId: eventId)
+            return elkURL(index: self.engErrorsIndexName, eventId: eventId)
         }
-        let index = self.engAnalyticsIndexName
-        return elkURL(index: index, eventId: eventId)
+        return elkURL(index: self.engAnalyticsIndexName, eventId: eventId)
     }
     
     public func timestampAndLogEngPayload(_ dict: [String: Any], event: String) {
