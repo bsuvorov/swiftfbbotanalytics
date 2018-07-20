@@ -111,7 +111,7 @@ public class KibanaAnalytics {
         }
     }
     
-    private func elkURL(index: String, eventId: String) -> String {
+    public func elkURL(index: String, eventId: String) -> String {
         return "http://\(host)/\(index)/\(endpoint)/\(eventId)"
     }
     
